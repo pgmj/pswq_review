@@ -1,0 +1,586 @@
+---
+title: "PSWQ scoping review: running the searches and initial findings"
+author: "Magnus Johansson"
+date: last-modified
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    embed-resources: true
+    df-print: paged
+execute:
+  echo: true
+  warning: false
+  message: false
+  cache: false
+---
+
+This notebook runs the open-database searches for the PSWQ scoping review, caches
+each raw result to `data/*.rds`, harmonizes the results to a common schema,
+deduplicates, and summarizes what the searches return. It is a working document
+and is deliberately kept out of the preregistration render (`_quarto.yml` renders
+only `index.qmd`).
+
+The programmatic searches here use Search A, the instrument-only query, which is
+the primary strategy for recall. Method screening happens at the title and
+abstract stage. As an initial finding, the OpenAlex results are also flagged for
+whether a psychometric method is mentioned, which approximates the size of the
+methods-restricted Search B. Lens.org, Dimensions, and CORE need a token or a
+manual export and are read from `exports/` if files are present.
+
+To re-run a search from scratch, delete its `.rds` in `data/` or pass
+`refresh = TRUE` to `fetch_or_load()`.
+
+## Setup
+
+```{r}
+#| label: setup
+
+library(openalexR)
+library(europepmc)
+library(dplyr)
+library(stringr)
+library(tibble)
+library(ggplot2)
+library(httr2)
+
+# Join OpenAlex's polite pool.
+options(openalexR.mailto = "magnus.johansson.3@ki.se")
+
+`%||%` <- function(a, b) if (is.null(a)) b else a
+
+cache_dir <- "data"
+#cache_dir <- "data/dryrun_2026-09-23"
+dir.create(cache_dir, showWarnings = FALSE)
+
+# Load a cached .rds if present, otherwise evaluate `expr`, save it, return it.
+# `expr` is only evaluated on a cache miss (lazy argument), so an existing cache
+# never triggers a network call.
+fetch_or_load <- function(name, expr, refresh = FALSE) {
+  path <- file.path(cache_dir, paste0(name, ".rds"))
+  if (!refresh && file.exists(path)) {
+    message("loading cached ", path)
+    return(readRDS(path))
+  }
+  result <- expr
+  saveRDS(result, path)
+  result
+}
+
+# Safe column access and DOI normalization.
+col <- function(df, name) if (name %in% names(df)) df[[name]] else NULL
+# First matching column among several candidate names. openalexR v2.0.0 renamed
+# some columns (for example the abstract), so accept both old and new names.
+col_any <- function(df, ...) {
+  for (nm in c(...)) if (nm %in% names(df)) return(df[[nm]])
+  NULL
+}
+norm_doi <- function(x) {
+  x <- str_to_lower(as.character(x))
+  x <- str_remove(x, "^https?://(dx\\.)?doi\\.org/")
+  str_trim(x)
+}
+
+# Terms that indicate a psychometric method, used to flag Search-B-like records.
+methods_pattern <- regex(
+  paste(
+    "rasch", "item response", "\\birt\\b", "graded response", "partial credit",
+    "rating scale model", "factor analys", "confirmatory factor",
+    "exploratory factor", "\\befa\\b", "\\bcfa\\b", "bifactor",
+    "structural equation", "measurement invariance",
+    "differential item functioning", "\\bdif\\b", "dimensional", "psychometric",
+    sep = "|"
+  ),
+  ignore_case = TRUE
+)
+
+# The instrument-only query, expressed per source below.
+instrument_terms <- '"Penn State Worry Questionnaire" OR PSWQ'
+
+# Europe PMC has no combined title/abstract field, and a non-field-qualified
+# query also matches full text for open-access articles, which inflates counts.
+# Restrict to title and abstract explicitly. Phrases carry their own quotes.
+epmc_tiab <- function(terms) {
+  paste(sprintf('(TITLE:%s OR ABSTRACT:%s)', terms, terms), collapse = " OR ")
+}
+instrument_epmc <- epmc_tiab(c('"Penn State Worry Questionnaire"', 'PSWQ'))
+methods_terms <- c(
+  'Rasch', '"item response theory"', 'IRT', '"graded response model"',
+  '"partial credit model"', '"rating scale model"', '"factor analysis"',
+  '"confirmatory factor analysis"', '"exploratory factor analysis"',
+  'bifactor', '"structural equation modeling"', '"structural equation modelling"',
+  '"measurement invariance"', '"differential item functioning"', 'psychometric*'
+)
+methods_epmc <- epmc_tiab(methods_terms)
+
+# Europe PMC's lite search (europepmc package) returns no abstracts. Query the
+# REST API with resultType=core to get abstractText in bulk, paginating by
+# cursorMark.
+epmc_core_search <- function(query, page_size = 1000) {
+  base <- "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
+  out <- list(); cursor <- "*"
+  repeat {
+    resp <- request(base) |>
+      req_url_query(query = query, resultType = "core", format = "json",
+                    pageSize = page_size, cursorMark = cursor) |>
+      req_retry(max_tries = 3) |>
+      req_perform() |>
+      resp_body_json()
+    hits <- resp$resultList$result %||% list()
+    out  <- c(out, hits)
+    nxt  <- resp$nextCursorMark
+    if (length(hits) == 0 || is.null(nxt) || identical(nxt, cursor)) break
+    cursor <- nxt
+  }
+  out
+}
+```
+
+## OpenAlex
+
+```{r}
+#| label: openalex
+
+oa_raw <- fetch_or_load("openalex_A", oa_fetch(
+  entity = "works",
+  from_publication_date = "2010-01-01",
+  title_and_abstract.search = instrument_terms,
+  verbose = FALSE
+))
+
+tidy_oa <- function(df) {
+  date <- col_any(df, "publication_date")
+  yr   <- col_any(df, "publication_year") %||%
+    (if (!is.null(date)) as.integer(substr(as.character(date), 1, 4)) else NA_integer_)
+  tibble(
+    source   = "OpenAlex",
+    doi      = norm_doi(col_any(df, "doi") %||% NA_character_),
+    title    = as.character(col_any(df, "title", "display_name") %||% NA_character_),
+    year     = suppressWarnings(as.integer(yr)),
+    abstract = as.character(col_any(df, "abstract", "ab") %||% NA_character_)
+  )
+}
+
+oa_tidy <- tidy_oa(oa_raw)
+nrow(oa_tidy)
+```
+
+1021
+
+## Europe PMC
+
+Restricted to title and abstract via `instrument_epmc`, because a non-field
+query also matches full text for open-access articles and inflates the count.
+This keeps Europe PMC comparable to the OpenAlex and PubMed title/abstract
+searches. Full-text-only mentions that are dropped are papers that cite a PSWQ
+study rather than use the instrument, and citation chasing recovers any that
+matter. The REST API is queried with `resultType=core`, so abstracts come back
+too, which lets the methods-mention flag below cover Europe PMC as well as
+OpenAlex.
+
+```{r}
+#| label: europepmc
+
+epmc_raw <- fetch_or_load("europepmc_A_core", epmc_core_search(
+  paste0('(', instrument_epmc, ') AND (PUB_YEAR:[2010 TO 2026])')
+))
+
+epmc_tidy <- tibble(
+  source   = "Europe PMC",
+  doi      = norm_doi(vapply(epmc_raw, function(x) x$doi %||% NA_character_, character(1))),
+  title    = vapply(epmc_raw, function(x) x$title %||% NA_character_, character(1)),
+  year     = vapply(epmc_raw, function(x) suppressWarnings(as.integer(x$pubYear %||% NA)), integer(1)),
+  abstract = vapply(epmc_raw, function(x) x$abstractText %||% NA_character_, character(1))
+)
+nrow(epmc_tidy)
+```
+
+426.
+
+## PubMed
+
+Wrapped so a network or parsing hiccup does not stop the notebook. Leaves no
+`pm_tidy` object if it fails, and the combine step below simply skips it.
+
+```{r}
+#| label: pubmed
+
+pm_raw <- tryCatch(
+  fetch_or_load("pubmed_A", {
+    library(rentrez)
+    term <- paste0('("Penn State Worry Questionnaire"[tiab] OR PSWQ[tiab]) ',
+                   'AND 2010:2026[pdat]')
+    # Use the web history so summaries are fetched by POST in batches. Passing
+    # many ids to entrez_summary as a GET overflows the URL (HTTP 414).
+    srch <- entrez_search(db = "pubmed", term = term, retmax = 0,
+                          use_history = TRUE)
+    recs <- list()
+    if (srch$count > 0) {
+      step <- 200
+      for (start in seq(0, srch$count - 1, by = step)) {
+        chunk <- entrez_summary(db = "pubmed", web_history = srch$web_history,
+                                retstart = start, retmax = step,
+                                always_return_list = TRUE)
+        recs <- c(recs, chunk)
+        Sys.sleep(0.34)   # stay under 3 requests/second without an API key
+      }
+    }
+    recs
+  }),
+  error = function(e) { message("PubMed skipped: ", conditionMessage(e)); NULL }
+)
+
+if (!is.null(pm_raw) && length(pm_raw) > 0) {
+  recs <- if (!is.null(pm_raw$uid)) list(pm_raw) else pm_raw   # single vs many
+  get_doi <- function(x) {
+    ids <- x$articleids
+    d <- if (is.data.frame(ids)) ids$value[ids$idtype == "doi"] else character(0)
+    if (length(d)) d[1] else NA_character_
+  }
+  pm_tidy <- tibble(
+    source   = "PubMed",
+    doi      = norm_doi(vapply(recs, get_doi, character(1))),
+    title    = vapply(recs, function(x) x$title %||% NA_character_, character(1)),
+    year     = vapply(recs, function(x) suppressWarnings(as.integer(substr(x$pubdate, 1, 4))), integer(1)),
+    abstract = NA_character_
+  )
+  nrow(pm_tidy)
+}
+```
+
+403.
+
+## Semantic Scholar
+
+```{r}
+#| label: semanticscholar
+
+s2_raw <- tryCatch(
+  fetch_or_load("semanticscholar_A", {
+    library(httr2)
+    fetch_page <- function(token = NULL) {
+      request("https://api.semanticscholar.org/graph/v1/paper/search/bulk") |>
+        req_url_query(
+          query  = '"Penn State Worry Questionnaire" | PSWQ',
+          year   = "2010-",
+          fields = "title,year,externalIds",
+          token  = token
+        ) |>
+        req_retry(max_tries = 3) |>
+        req_perform() |>
+        resp_body_json()
+    }
+    out <- list(); tok <- NULL
+    repeat {
+      pg  <- fetch_page(tok)
+      out <- c(out, pg$data %||% list())
+      tok <- pg$token
+      if (is.null(tok)) break
+    }
+    out
+  }),
+  error = function(e) { message("Semantic Scholar skipped: ", conditionMessage(e)); NULL }
+)
+
+if (!is.null(s2_raw) && length(s2_raw) > 0) {
+  s2_tidy <- tibble(
+    source   = "Semantic Scholar",
+    doi      = norm_doi(vapply(s2_raw, function(x) x$externalIds$DOI %||% NA_character_, character(1))),
+    title    = vapply(s2_raw, function(x) x$title %||% NA_character_, character(1)),
+    year     = vapply(s2_raw, function(x) suppressWarnings(as.integer(x$year %||% NA)), integer(1)),
+    abstract = NA_character_
+  )
+  nrow(s2_tidy)
+}
+```
+
+825.
+
+## Search B: methods-restricted counts
+
+Search A above returns every record that mentions the PSWQ, most of which use the
+instrument without evaluating it. The methods-restricted Search B is the count
+that sets the screening load. Europe PMC runs it as an API query. OpenAlex is
+approximated by filtering its Search A abstracts.
+
+```{r}
+#| label: searchB
+
+epmcB <- fetch_or_load("europepmc_B_ta", epmc_search(
+  query = paste0('(', instrument_epmc, ') AND (', methods_epmc,
+                 ') AND (PUB_YEAR:[2010 TO 2026])'),
+  limit = 3000, output = "parsed"
+))
+
+# OpenAlex Search A returns abstracts, so filter those locally for a real count.
+oaB_n <- sum(str_detect(paste(oa_tidy$title, oa_tidy$abstract), methods_pattern),
+             na.rm = TRUE)
+
+tibble::tibble(
+  source    = c("OpenAlex (local abstract filter)", "Europe PMC (title/abstract)"),
+  n_methods = c(oaB_n, nrow(epmcB))
+)
+```
+
+  source                           n_methods
+  <chr>                                <int>
+1 OpenAlex (local abstract filter)       161
+2 Europe PMC (title/abstract)             70
+
+
+## Manual exports (Lens, Dimensions, CORE)
+
+Drop RIS or BibTeX exports from Lens.org, Dimensions, or CORE into `exports/`.
+This reads any that are present with `synthesisr`. Skipped when the folder is
+empty.
+
+```{r}
+#| label: exports
+
+exp_files <- list.files("exports", pattern = "\\.(ris|bib|txt)$",
+                        full.names = TRUE, ignore.case = TRUE)
+
+if (length(exp_files) > 0 && requireNamespace("synthesisr", quietly = TRUE)) {
+  exp_raw <- synthesisr::read_refs(exp_files)
+  exp_tidy <- tibble(
+    source   = "Manual export",
+    doi      = norm_doi(col(exp_raw, "doi") %||% NA_character_),
+    title    = as.character(col(exp_raw, "title") %||% NA_character_),
+    year     = suppressWarnings(as.integer(col(exp_raw, "year") %||% NA)),
+    abstract = NA_character_
+  )
+  nrow(exp_tidy)
+}
+```
+
+## Combine and deduplicate
+
+```{r}
+#| label: combine
+
+tidy_objs <- c("oa_tidy", "epmc_tidy", "pm_tidy", "s2_tidy", "exp_tidy")
+records <- bind_rows(mget(tidy_objs[vapply(tidy_objs, exists, logical(1))]))
+
+records <- records |>
+  mutate(
+    doi_key   = na_if(doi, ""),
+    title_key = na_if(str_squish(str_replace_all(str_to_lower(title), "[^\\p{L}\\p{N}]+", " ")), ""),
+    match_key = coalesce(doi_key, title_key)
+  )
+
+identified_by_source <- count(records, source, name = "n_identified")
+
+# Prefer the copy that carries an abstract, so the methods flag can see it.
+deduped <- records |>
+  mutate(has_abs = !is.na(abstract) & abstract != "") |>
+  arrange(match_key, desc(has_abs), source) |>
+  distinct(match_key, .keep_all = TRUE) |>
+  select(-has_abs)
+
+n_identified  <- nrow(records)
+n_after_dedup <- nrow(deduped)
+n_duplicates  <- n_identified - n_after_dedup
+```
+
+## Initial findings
+
+```{r}
+#| label: counts
+
+identified_by_source
+
+tibble::tibble(
+  metric = c("Records identified (all sources)", "Duplicates removed",
+             "Records after dedup"),
+  n      = c(n_identified, n_duplicates, n_after_dedup)
+)
+```
+
+1126 dedup
+
+How many of the deduplicated records mention a psychometric method in their title
+or abstract, which approximates the reach of the methods-restricted Search B.
+Abstracts are available from OpenAlex and Europe PMC. PubMed and Semantic Scholar
+contribute titles only, so this remains a mild lower bound.
+
+```{r}
+#| label: methods-share
+
+deduped |>
+  mutate(mentions_method = str_detect(paste(title %||% "", abstract %||% ""),
+                                      methods_pattern)) |>
+  count(mentions_method)
+```
+
+187 mentions method.
+
+Publication-year distribution of the deduplicated set.
+
+```{r}
+#| label: year-plot
+
+deduped |>
+  filter(!is.na(year)) |>
+  count(year) |>
+  ggplot(aes(year, n)) +
+  geom_col() +
+  labs(x = "Publication year", y = "Records (deduplicated)") +
+  theme_minimal()
+```
+
+```{r}
+#| label: year-plot-psym
+
+deduped |>
+  filter(!is.na(year)) |>
+  mutate(mentions_method = str_detect(paste(title %||% "", abstract %||% ""),
+                                      methods_pattern)) |>
+  filter(mentions_method == TRUE) |> 
+  count(year,mentions_method) |> 
+
+  ggplot(aes(year, n)) +
+  geom_col(fill = "sienna2") +
+  labs(x = "Publication year", y = "Records (deduplicated)",
+       subtitle = "Psychometric in title") +
+  theme_minimal()
+```
+
+## Source contribution and overlap
+
+How much each source overlaps the others, and how many records it uniquely
+contributes. This is the direct evidence for the open-only decision and for the
+Information Sources section of the protocol: a source that adds few unique
+records is dispensable, while a large unique contribution justifies keeping it.
+
+```{r}
+#| label: source-contribution
+
+# One row per (record, source) pair.
+key_source <- distinct(records, match_key, source)
+
+# Records found in 1, 2, 3, ... sources.
+overlap <- key_source |>
+  count(match_key, name = "n_src") |>
+  count(n_src, name = "n_records")
+
+# Records unique to a single source, tallied by source.
+unique_by_source <- key_source |>
+  add_count(match_key, name = "n_src") |>
+  filter(n_src == 1) |>
+  count(source, name = "n_unique")
+
+# Distinct records each source holds, and how many are unique to it.
+source_contribution <- key_source |>
+  count(source, name = "n_records") |>
+  left_join(unique_by_source, by = "source") |>
+  mutate(n_unique   = coalesce(n_unique, 0L),
+         pct_unique = round(100 * n_unique / n_records, 1)) |>
+  arrange(desc(n_records))
+
+overlap
+source_contribution
+```
+
+  source           n_records n_unique pct_unique
+  <chr>                <int>    <int>      <dbl>
+1 OpenAlex              1015      264       26  
+2 Semantic Scholar       811       88       10.9
+3 Europe PMC             425       10        2.4
+4 PubMed                 403        7        1.7
+
+```{r}
+# The records PubMed contributed that no other source held.
+pm_only <- key_source |>
+  add_count(match_key, name = "n_src") |>
+  filter(n_src == 1, source == "PubMed") |>
+  left_join(distinct(records, match_key, title, year, doi), by = "match_key")
+
+pm_only |> select(year, doi, title) |> print(n = Inf) |> 
+  knitr::kable()
+```
+
+PubMed contributed nothing real. Three of 7 had missing DOI, two had missing title, and the remaining two had no relevance.
+
+## Known-item validation
+
+You need five to ten PSWQ psychometric papers you already know, then check both whether Search A returned them and whether the methods pattern flags them. A known paper that Search A misses means a string revision and a bump to v2 in the search log. A known paper that Search A returns but the methods pattern misses means the methods block has a hole, which matters less since Search B does not decide inclusion.
+
+```{r}
+# Known-item check against the pilot pulls. Paste DOIs of 5 to 10 PSWQ
+# psychometric papers you already know should be found.
+known <- c(
+  "10.1037/a0037251",
+  "10.1016/j.ijchp.2025.100579",
+  "10.1080/02646838.2023.2209101",
+  "10.1007/s10862-025-10200-4",
+  "10.1007/s10578-024-01774-3",
+  "10.4103/2542-3932.304944",
+  "10.1007/s10862-023-10029-9",
+  "10.1177/1073191121993223",
+  "10.1177/10731911211013911",
+  "10.1080/03069885.2021.1897969"
+)
+
+library(dplyr); library(stringr)
+norm <- function(x) str_remove(str_to_lower(x), "^https?://(dx\\.)?doi\\.org/")
+
+# Search A reach
+tibble(doi = known) |>
+  mutate(found_in_A = norm(doi) %in% norm(deduped$doi)) |> 
+  arrange(doi)
+
+# Search B reach: a known paper found by A but not flagged by the methods
+# pattern means the methods block would miss it. Needs the abstract column.
+deduped |>
+  filter(norm(doi) %in% norm(known)) |>
+  mutate(mentions_method = str_detect(paste(title, abstract), methods_pattern)) |>
+  select(doi, title, mentions_method) |> 
+  arrange(doi)
+```
+
+All 10 found using A and B. Check was run on the searches made September 8th 2026.
+
+```{r}
+# Do any records lack both a DOI and a usable title?
+records |>
+  filter(is.na(match_key) | match_key == "") |>
+  count(source)
+
+sum(is.na(records$match_key)  | records$match_key  == "")   # expect 0
+sum(is.na(deduped$match_key)  | deduped$match_key  == "")   # expect 0
+
+records |>
+  filter(is.na(match_key) | match_key == "") |>
+  mutate(has_abstract = !is.na(abstract) & abstract != "") |>
+  select(source, year, has_abstract, doi, title) |>
+  print(n = 40)
+```
+
+
+## Hand off to screening
+
+Write the deduplicated set to CSV for import into Rayyan, and keep the full
+record table as an `.rds` for later steps.
+
+```{r}
+#| label: export
+
+readr::write_csv(
+  deduped |> select(source, year, title, doi),
+  file.path(cache_dir, "records_deduped.csv")
+)
+saveRDS(deduped, file.path(cache_dir, "records_deduped.rds"))
+```
+
+## Notes
+
+- Each source is cached under `data/`. Delete a file or pass `refresh = TRUE` to
+  re-fetch.
+- OpenAlex and Europe PMC (via `resultType=core`) return abstracts, so the
+  methods-mention flag covers them. PubMed and Semantic Scholar contribute titles
+  only here, so the flag stays a mild lower bound.
+- The programmatic pulls use Search A (instrument only). Search B, the
+  methods-restricted query, is documented per database in Appendix A of
+  `index.qmd`, and its OpenAlex reach is approximated above by the
+  methods-mention flag.

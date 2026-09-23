@@ -1,0 +1,686 @@
+---
+# Format, author, and running-head metadata are inherited from _quarto.yml.
+# This file holds the preregistration body. Fill the placeholder sections, then
+# register the frozen version at OSF.
+title: "Psychometric evaluation of the Penn State Worry Questionnaire: a scoping review protocol"
+date: last-modified
+keywords:
+  - Penn State Worry Questionnaire
+  - PSWQ
+  - scoping review
+  - psychometrics
+  - Rasch
+  - item response theory
+  - factor analysis
+abstract: |
+  The Penn State Worry Questionnaire (PSWQ) is a widely used 16-item measure of
+  trait worry, and its psychometric literature has reached markedly different
+  conclusions about the structure and dimensionality of the instrument. We
+  suspect that much of this divergence reflects how studies interpret model fit,
+  and in particular a reliance on rule-of-thumb cutoffs, together with variation
+  in the choice of estimator for confirmatory factor analysis and in whether and
+  how local independence of the items is evaluated. This protocol describes a
+  scoping review that maps the psychometric literature on the PSWQ published
+  since 2010 and charts not only what each study concluded but how it reached
+  that conclusion. Eligible records are empirical studies that report an original
+  psychometric evaluation of a PSWQ version that evaluates a specified
+  structure, including Rasch measurement theory, item response theory, and confirmatory factor
+  analysis. Any population and
+  setting are included, and
+  eligibility is limited to reports written in English. The search pairs an
+  instrument-only search for sensitivity with an instrument-and-methods search
+  for precision, run across open databases (OpenAlex, Semantic Scholar, Europe
+  PMC, and PubMed). For each
+  study we chart the method, estimator, and dimensional conclusion, together
+  with the criteria used to interpret model fit, and we record whether
+  and how each of four measurement properties, unidimensionality, local
+  independence, invariance, and ordered response-category thresholds, was
+  evaluated. Findings will be summarized descriptively rather than pooled.
+---
+
+## Background {#sec-background}
+
+The 16-item Penn State Worry Questionnaire (PSWQ) is one of the most widely used
+self-report measures of trait worry. It has a large psychometric literature, and
+that literature has reached markedly different conclusions about the structure
+and dimensionality of the instrument, from a single worry factor to correlated
+two-factor and method-factor solutions [e.g @wilsonComparisonLongShort2025].
+
+A shortcoming that affects psychometric studies across all methods is the use of
+rule-of-thumb cutoffs to interpret model fit. Fixed thresholds for fit indices
+were never meant as universal decision rules, and a growing body of work shows
+that they misclassify fit under conditions that are common in questionnaire data
+[@marshSearchGoldenRules2004; @mcneishDynamicFitIndex2021;
+@goretzkoEvaluatingModelFit2024; @mcneishHowPsychologistsDetermine2026;
+@johanssonDetectingItemMisfit2025;@groskurthWhyWeNeed2024]. We suspect that reliance on these cutoffs is
+a major reason for the divergence in the PSWQ literature. Two further sources of
+variation are the choice of estimator in confirmatory factor analysis and
+whether, and how, local independence of the items is evaluated.
+
+Within modern psychometrics, four properties are usually described as
+prerequisites for measurement [@christensenPsychometricValidationPROM2021]:
+
+- unidimensionality
+- local independence
+- invariance across relevant groups
+- monotonicity, in the sense of ordered response-category thresholds
+
+These four properties organize the review. Together they are conditions for a
+total score to be interpretable as a measure of one latent variable with a
+constant meaning across groups. Sufficiency in the stricter sense, where the
+total score carries all the information the responses hold about the person
+parameter, belongs to the Rasch family and not to the other models in scope
+[@kreinerValidityObjectivityReflections2007]. Elsewhere the optimal score weights
+items by discrimination in item response models and by standardized factor
+loadings in factor models [@mcneishPracticalImplicationsSum2024]. Not every
+property is addressed by every method. The ordering of response-category
+thresholds can be evaluated only with adjacent-category models, which is to say the partial credit model, the
+rating scale model, and the generalized partial credit model
+[@andrichExpandedDerivationThreshold2013]. Confirmatory factor analysis does not
+address the property at all, and the boundary
+parameters are ordered by construction in the graded response model. As a result, disordered thresholds cannot be identified, even if they are present in the data. Charting which properties each
+study evaluated, and how, is therefore as informative as charting the conclusions
+the studies reached.
+
+
+## Review objectives and questions
+
+The objective is to map the psychometric literature on the PSWQ published since
+2010, to describe how that literature has evaluated the instrument, and to
+examine whether interpretive choices are related to the divergent conclusions on
+structure and dimensionality. The review addresses four questions.
+
+1. Which psychometric methods and models have been applied to the PSWQ since
+   2010, and in which populations, languages, and versions.
+2. What conclusions on structure and dimensionality have been reached, and how
+   they vary across studies.
+3. For each of the four measurement properties in @sec-background
+   (unidimensionality, local independence, invariance, monotonicity), whether
+   and how the property was evaluated.
+4. Which criteria were used to interpret model fit (rule-of-thumb or
+   simulation-based), which estimator was used in the factor-analytic models,
+   and how local dependence was handled, and whether these choices track the
+   structural conclusions reached.
+
+## Eligibility criteria
+
+Framed as Population, Concept, Context (PCC), with further restrictions on
+design, timeframe, and language.
+
+- Population. Any sample completing a PSWQ version, with no restriction on age,
+  clinical status, or population.
+- Concept. A psychometric evaluation that specifies a structure for the PSWQ
+  and evaluates its adequacy against criteria, using at least one method in
+  scope: Rasch or other item response theory models, confirmatory factor
+  analysis, structural equation modeling, exploratory structural equation
+  modeling (ESEM), measurement invariance, or differential item functioning.
+  ESEM is in scope on this principle, despite its name, since it fits a
+  specified number of factors and reports model fit, factor correlations, and
+  invariance. Methods that derive the number of dimensions from the data rather
+  than evaluating a specified structure are out of scope, including exploratory
+  factor analysis, principal component analysis, and exploratory graph analysis
+  (EGA). Network models are also out of scope, including confirmatory ones,
+  because a network describes relations among the items rather than whether a
+  total score measures one latent variable.
+- Context. Any setting and country.
+- Study designs. Empirical studies reporting an original psychometric evaluation
+  of the PSWQ with at least one in-scope method (see Concept). Reviews,
+  commentaries, and studies using the PSWQ only as an outcome are excluded.
+  Studies that do not evaluate a specified structure for the PSWQ are also
+  excluded, whether they report only classical reliability and validity
+  correlations or only methods that derive the number of dimensions from the
+  data.
+- Timeframe. Published 2010 onward.
+- Language. Only reports written in English are included. Reports in other
+  languages are excluded at the screening stage. This restriction is pragmatic
+  and may miss psychometric studies of non-English PSWQ translations that are
+  published only in other languages.
+
+## Information sources
+
+The searches use open databases only, chosen after a pilot run of the
+instrument-only search. OpenAlex and Semantic Scholar carried the field:
+together they held almost all of the records that appeared in a single source,
+while Europe PMC and PubMed, whose biomedical coverage OpenAlex already spans,
+each added only a handful of unique records. OpenAlex is therefore the primary
+source, Semantic Scholar the second, and Europe PMC provides biomedical
+completeness. PubMed returned seven records that no other source held, and on
+inspection none of them was an eligible record the other sources had missed, so
+PubMed is retained as a check on biomedical coverage rather than for what it
+adds. Scopus and Web of Science are not used, so the search is fully
+reproducible by any reader.
+
+The full strategy, per-database strings, and code are in @sec-appendix.
+
+## Search strategy
+
+The instrument block is `"Penn State Worry Questionnaire" OR PSWQ`. A methods
+block covering Rasch, item response theory and variants, factor-analytic and
+structural equation models, measurement invariance, and differential item
+functioning is ANDed with it for the precision search, while an instrument-only
+search is run for sensitivity. Database-specific strings, wildcards, and field
+tags are documented in full in @sec-appendix so the search is reproducible.
+Before the searches are run, each string is checked against a known set of five
+to ten PSWQ psychometric papers, and a string that fails to return one of them
+is revised and the revision recorded as a new query version in the search log.
+The search is reported following PRISMA-S.
+
+## Selection of sources of evidence
+
+Two reviewers screen each title and abstract independently, then full texts, with
+disagreements resolved by discussion or a third reviewer. Screening is done in
+Rayyan. Inter-reviewer agreement and the reasons for full-text exclusion are
+reported in a PRISMA-ScR flow diagram. Two full-text exclusion reasons are
+pre-specified, not a PSWQ psychometric study, and no evaluation of a specified
+structure for the PSWQ. The second reason covers three groups, studies reporting
+only classical reliability or validity correlations, studies reporting only
+exploratory methods such as exploratory factor analysis, principal component
+analysis, or exploratory graph analysis, and studies reporting only network
+models. Records excluded under the second reason are counted at screening and
+the three groups are counted apart, since the prevalence of each is itself a
+finding. None of them is carried into data charting, which covers studies
+evaluating a specified structure.
+
+## Data charting
+
+Two reviewers chart every included study independently, with disagreements
+resolved by discussion or a third reviewer. The fields in @tbl-charting record
+both the conclusions reached by each study and the methods used to reach them.
+The fields for dimensionality, local dependence, invariance, and ordered
+response categories correspond to the four measurement properties in
+@sec-background, so the review can describe the
+evidence behind each conclusion and not only the conclusion itself.
+
+| Field | What is recorded |
+|-------|------------------|
+| Author | First author |
+| Year | Publication year |
+| Title | Article title |
+| Study population | Sample description, setting, and country. Use a separate row per study when a paper reports more than one |
+| N | Sample size |
+| PSWQ version | Full 16-item form or a short form (for example PSWQ-A, PSWQ-8, PSWQ-3) |
+| Psychometric method(s) / model(s) | CFA, Rasch (PCM, RSM), IRT (GRM, GPCM, or other), ESEM (record the rotation), or a combination |
+| Estimator | ML, MLR, WLSMV, or ULSMV for factor models, MML for IRT, and CML, JML, or MML for Rasch |
+| Software | For example lavaan, Mplus, Winsteps, eRm, mirt, TAM |
+| Dimensionality cutoffs | Rule-of-thumb or simulation-based, and which metrics or indices |
+| Dimensionality result | The structural or dimensional conclusion reached |
+| Local dependence | Evaluated? Yes or No. Examples: residual/error/Q3 correlations |
+| LD cutoffs | Rule-of-thumb or simulation-based, if evaluated |
+| LD result | Method used and which item pairs were locally dependent, if any |
+| Invariance | Evaluated? Yes or No. Examples: multi-group CFA (MG-CFA), or differential item functioning (DIF) |
+| Invariance variable(s) | Which grouping variables were evaluated, such as sex, age group, language version, or clinical status |
+| Invariance cutoffs | Rule-of-thumb or simulation-based, if evaluated |
+| Invariance result | Groups tested, the finding, and which items showed DIF or non-invariance, if any |
+| Ordered response category thresholds | Evaluated? Yes or No. Only evaluable with adjacent-category models (PCM, RSM, GPCM). Not evaluable with CFA, nor with the GRM, where thresholds are ordered by construction |
+| Response category result | The finding, such as disordered thresholds |
+
+: Data charting fields. {#tbl-charting}
+
+*Note.* CFA = confirmatory factor analysis; ESEM = exploratory structural
+equation modeling; IRT = item response theory; PCM = partial credit model; RSM = rating scale
+model; GRM = graded response model; GPCM = generalized partial credit model;
+ML = maximum likelihood; MLR = robust maximum likelihood; WLSMV = mean- and
+variance-adjusted weighted least squares; ULSMV = mean- and variance-adjusted
+unweighted least squares; MML = marginal maximum likelihood; JML = joint maximum
+likelihood; CML = conditional maximum likelihood.
+
+## Synthesis
+
+Results are charted and described rather than pooled, so no meta-analysis of
+parameter estimates is planned. Reporting is organized around the four
+measurement properties in @sec-background and around the three interpretive
+choices this review suspects of driving the divergent conclusions, which are the
+type of cutoff used to interpret model fit, the estimator chosen for the
+factor-analytic models, and whether and how local dependence is evaluated. Those two
+outputs are reported first. The descriptive map of methods and populations
+supports them and follows.
+
+First, the evaluation of the four measurement properties. The four properties in
+@sec-background are conditions for a total score to be interpretable as a
+measure of one latent variable, and unidimensionality is one of them, so the
+matrix records what each study found and not only what it evaluated. The
+study-by-property matrix covers unidimensionality, local independence,
+invariance, and ordered response-category thresholds. Each entry records how the
+property was assessed, the cutoff or criterion applied where @tbl-charting
+records one, and what was found. For local independence, invariance, and ordered
+response-category thresholds the prior question is whether the property was
+evaluated at all, and counts are reported as the number and percentage of studies
+evaluating each one. For unidimensionality the informative entries are how
+dimensionality was assessed and what the assessment showed, since findings of
+multidimensionality are expected and a departure from unidimensionality bears on
+whether a total score measures one latent variable at all. Ordered
+response-category thresholds can be evaluated only with adjacent-category models,
+so that property is reported against two denominators, all included studies and
+the subset fitting a partial credit, rating scale, or generalized partial credit
+model. Studies fitting a graded response model count toward the first denominator
+and not the second, since its boundary parameters are ordered by construction.
+
+The number of studies that never evaluate local independence is reported on its
+own and not only as a row of the matrix. Local dependence inflates reliability
+and can produce an apparent second dimension, so a study that does not evaluate
+it cannot distinguish a substantive second factor from dependence between items,
+and the size of that group bounds how much of the dimensionality literature can
+be interpreted at all.
+
+Two of the properties are charted at the item level, and each gets a summary of
+its own. For local independence, a table of item pairs counts how many studies
+flagged each pair. For invariance, a table of items by grouping variable counts
+how many studies found differential item functioning for each combination, which
+shows whether particular items carry DIF for a particular variable, such as sex,
+across the literature. Item numbers are mapped onto the 16-item version, since
+the short forms renumber items, and studies that report a finding without
+identifying the items contribute to the property counts but not to the item-level
+tables.
+
+Second, the interpretive choices and the structural conclusions. The
+dimensionality findings charted in the first matrix are grouped into a small set
+of conclusion categories, such as a single worry factor, correlated factors, and
+a solution with a method factor for the reverse-worded items, and the
+distribution across those categories is reported.
+Each category is then cross-tabulated against the type of cutoff used
+(rule-of-thumb or simulation-based), the estimator, and the handling of local
+dependence. These three tables address the central question of the review,
+and they are reported together to allow the reader to see whether studies reaching
+different conclusions differ in these methodological choices. They are described, not tested.
+Cell counts are expected to be small, and the studies differ in sample size,
+population, and PSWQ version, so any pattern is read as descriptive and as a
+basis for further work, not as evidence that one choice produced one conclusion.
+
+Third, a map of methods and populations. A matrix of psychometric method by study
+population gives the coverage of the literature, supported by counts by PSWQ
+version, language of administration, country, and publication year. Each cell
+counts study-by-method pairs, so a study applying more than one method
+contributes to more than one cell and the row and column totals exceed the number
+of included studies. Cells containing no studies are printed as 0 rather than
+left blank. The population categories are derived from the charted sample
+descriptions rather than pre-specified here, since the descriptions are not known
+before charting. A figure of records per year, grouped by method family (factor
+analytic, including CFA and ESEM, item response theory, and Rasch), shows
+whether the mix of methods has changed since 2010.
+
+Studies reporting more than one sample, or more than one PSWQ version, contribute
+one charted row per sample, and every count states whether the unit is the study
+or the sample. The narrative closes with the gaps these tables show, in
+particular the measurement properties that are rarely evaluated, the interpretive
+choices that are rarely justified, and the populations and language versions with
+little or no psychometric evidence.
+
+## Registration and timeline
+
+This protocol is registered at OSF before screening begins. When the DOI is minted, we will record the OSF registration DOI in an updated protocol. The database searches are planned to be conducted on the 29th of September 2026.
+The protocol source, the search notebook, and the record files the notebook
+produces are kept in a public GitHub repository, <https://github.com/pgmj/pswq_review>, so that the search can be rerun and the reported counts checked. A GitHub
+release is archived with a persistent DOI at registration and again when the
+review is complete, so that the cited version stays retrievable if the
+repository moves.
+
+## References
+
+::: {#refs}
+:::
+
+## Use of large language models
+
+A large language model (Claude, Anthropic) was used in preparing this protocol, for drafting and editing the text and for writing the search and record-management code in searches.qmd. The authors reviewed and verified all text, all search strings, and all code, and take responsibility for the content.
+
+
+{{< pagebreak >}}
+
+## Appendix A: Search strategy, databases, and record management {#sec-appendix}
+
+Search A uses the instrument name only, year-filtered, with method screened at
+the title and abstract stage, for highest recall. It is run in every database
+and its deduplicated output is the set that goes to screening. Search B ANDs the
+instrument with a methods block for a smaller, higher-precision set. Search B
+does not decide inclusion, since every record found by Search A is screened
+whether or not Search B returns it. Its purpose is to size the psychometric
+subset in advance, which gives the expected screening load, and to show whether
+the methods block reaches the records Search A returns. Search B is run for
+OpenAlex, as a filter on the returned titles and abstracts rather than as an API
+query, and for Europe PMC. The strings for the other databases are documented so
+that the search can be repeated in full. The strings below are shown reflowed
+across lines to fit the page. These boolean
+queries ignore whitespace between tokens, so the line breaks do not change what
+they match. Line breaks are never placed inside a quoted phrase.
+
+The runnable pipeline that executes these searches, with caching, harmonization,
+deduplication, and per-source contribution, is the companion notebook
+`searches.qmd`, which is the authoritative executable record and is deposited in
+the project repository with the record files it produces. The R snippets
+below mirror it and run Search A, the instrument-only search. The query blocks
+document the full strings, including the methods-restricted Search B that
+`searches.qmd` runs in its own Search B section.
+
+### Database selection rationale
+
+For a scoping review of a single, narrowly named instrument, an open-only core
+is defensible. OpenAlex now indexes well over 250 million works, ingesting
+Crossref and PubMed and much of what Scopus and Web of Science cover, and recent
+coverage comparisons find it matches or exceeds those databases for most fields.
+Open databases also give a reproducibility advantage: any reader can rerun an
+OpenAlex or Europe PMC query, whereas Scopus and Web of Science results are gated
+behind subscriptions.
+
+The trade-offs are metadata quality rather than coverage. OpenAlex abstracts
+come from an inverted index and are sometimes thin or missing, author keywords
+are less consistently captured than Web of Science Keywords Plus or Scopus
+indexing, and there is no controlled vocabulary to catch idiosyncratic wording.
+Search A is robust to this because it does not depend on the methods terms
+appearing in a well-populated abstract. Search B is more exposed, so any record
+found by A but not B is retained for screening regardless.
+
+A pilot run of the instrument-only search fixed the source set. OpenAlex
+contributed by far the most records found in no other source, Semantic Scholar a
+smaller but real share, and Europe PMC and PubMed only a handful each. The
+seven records unique to PubMed were inspected one by one. Two were irrelevant on
+the title, two carried no title, and three carried no DOI, so none of them was an
+eligible record that the other sources had missed. The adopted strategy
+is therefore open only: OpenAlex as the primary source, Semantic Scholar as the
+second, and Europe PMC for biomedical completeness.
+
+### Building blocks
+
+#### Instrument block
+
+```
+"Penn State Worry Questionnaire" OR PSWQ
+```
+
+The full name plus the acronym also capture the brief variants (PSWQ-A, PSWQ-C,
+PSWQ-3, PSWQ-8, PSWQ-PW), since those papers name the parent instrument.
+
+#### Methods block
+
+```
+Rasch OR "item response theory" OR IRT OR "graded response model"
+OR "partial credit model" OR "rating scale model"
+OR "factor analysis" OR "factor analytic"
+OR "confirmatory factor analysis" OR "exploratory factor analysis" OR EFA OR CFA
+OR bifactor OR "bi-factor" OR "structural equation model*"
+OR "measurement invariance" OR "differential item functioning" OR DIF
+OR dimensional* OR unidimensional* OR psychometric*
+```
+
+`psychometric*` is ANDed with a very specific instrument, so it adds recall with
+little noise. For maximum sensitivity append `OR validation OR validity OR
+reliability`, accepting more alpha-only studies to screen out. Terms for
+exploratory methods are kept although exploratory-only studies are not charted,
+since Search B is a size estimate rather than an inclusion filter. The groups
+counted apart at screening are identified from the Search A set, so the block
+does not need a term for every excluded method.
+
+### Database strings
+
+#### OpenAlex
+
+OpenAlex has no wildcard truncation (search stems, so plurals mostly resolve),
+and nested parentheses are unreliable. Comma-separated `filter=` clauses are
+combined with AND, so each concept goes in its own `.search` clause with internal
+`OR`. The URLs below are shown wrapped for the page. Join each into a single line
+and percent-encode spaces and quotes before use (` ` to `%20`, `"` to `%22`), or
+use the `openalexR` call, which encodes and paginates for you.
+
+Search A, instrument only (API):
+
+```
+https://api.openalex.org/works?filter=
+  from_publication_date:2010-01-01,
+  title_and_abstract.search:"Penn State Worry Questionnaire" OR PSWQ
+  &per-page=200&mailto=magnus.johansson.3@ki.se
+```
+
+Search B, instrument AND methods (API):
+
+```
+https://api.openalex.org/works?filter=
+  from_publication_date:2010-01-01,
+  title_and_abstract.search:"Penn State Worry Questionnaire" OR PSWQ,
+  title_and_abstract.search:Rasch OR "item response theory" OR IRT
+    OR "graded response model" OR "partial credit model"
+    OR "rating scale model" OR "factor analysis"
+    OR "confirmatory factor analysis" OR "exploratory factor analysis"
+    OR bifactor OR "structural equation modeling"
+    OR "measurement invariance" OR "differential item functioning"
+    OR psychometric
+  &per-page=200&mailto=magnus.johansson.3@ki.se
+```
+
+```r
+library(openalexR)
+options(openalexR.mailto = "magnus.johansson.3@ki.se")   # polite pool
+
+# Search A, instrument only. openalexR v2.0.0 renamed some columns (abstract
+# `ab` -> `abstract`), so tidy code downstream accepts both names.
+oa_raw <- oa_fetch(
+  entity = "works",
+  from_publication_date = "2010-01-01",
+  title_and_abstract.search = '"Penn State Worry Questionnaire" OR PSWQ',
+  verbose = FALSE
+)
+
+# Search B is approximated by filtering the returned title and abstract locally
+# against the methods terms, since OpenAlex returns abstracts. See searches.qmd.
+```
+
+### Additional open databases
+
+Each database has its own syntax for fields, phrases, wildcards, and year limits.
+The methods block is adapted per database. Wildcards are kept where supported and
+spelled out where they are not.
+
+#### Europe PMC
+
+Free, covers biomedical plus preprints. A non-field-qualified query also matches
+full text for open-access articles, which inflates counts, so the instrument and
+methods terms are restricted to title and abstract with `(TITLE:x OR ABSTRACT:x)`
+clauses. The REST API is queried with `resultType=core` to retrieve abstracts in
+bulk.
+
+Query (Search A, instrument only):
+
+```
+(TITLE:"Penn State Worry Questionnaire" OR ABSTRACT:"Penn State Worry Questionnaire"
+ OR TITLE:PSWQ OR ABSTRACT:PSWQ)
+AND (PUB_YEAR:[2010 TO 2026])
+```
+
+For the methods-restricted Search B, each methods term is wrapped in the same
+`(TITLE:term OR ABSTRACT:term)` form and ANDed with the instrument clause.
+
+```r
+library(httr2)
+
+epmc_tiab <- function(terms)
+  paste(sprintf('(TITLE:%s OR ABSTRACT:%s)', terms, terms), collapse = " OR ")
+instrument_epmc <- epmc_tiab(c('"Penn State Worry Questionnaire"', 'PSWQ'))
+
+# resultType=core returns abstractText; paginate with cursorMark.
+epmc_core_search <- function(query, page_size = 1000) {
+  base <- "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
+  out <- list(); cursor <- "*"
+  repeat {
+    resp <- request(base) |>
+      req_url_query(query = query, resultType = "core", format = "json",
+                    pageSize = page_size, cursorMark = cursor) |>
+      req_retry(max_tries = 3) |> req_perform() |> resp_body_json()
+    hits <- resp$resultList$result
+    out  <- c(out, hits); nxt <- resp$nextCursorMark
+    if (length(hits) == 0 || is.null(nxt) || identical(nxt, cursor)) break
+    cursor <- nxt
+  }
+  out
+}
+
+epmc_raw <- epmc_core_search(
+  paste0('(', instrument_epmc, ') AND (PUB_YEAR:[2010 TO 2026])')
+)
+```
+
+#### PubMed
+
+Free. Field tag `[tiab]` restricts to title and abstract, `[pdat]` to publication
+date. PubMed truncation with `*` does not combine cleanly inside a quoted phrase,
+so the modelling variant is spelled out. The query below is Search B. The
+programmatic pull beneath it runs Search A, the instrument-only form.
+
+Query (Search B, instrument AND methods):
+
+```
+("Penn State Worry Questionnaire"[tiab] OR PSWQ[tiab])
+AND (Rasch[tiab] OR "item response theory"[tiab] OR IRT[tiab]
+     OR "graded response model"[tiab] OR "partial credit model"[tiab]
+     OR "rating scale model"[tiab] OR "factor analysis"[tiab]
+     OR "confirmatory factor analysis"[tiab] OR "exploratory factor analysis"[tiab]
+     OR bifactor[tiab] OR "structural equation modeling"[tiab]
+     OR "structural equation modelling"[tiab] OR "measurement invariance"[tiab]
+     OR "differential item functioning"[tiab] OR psychometric*[tiab])
+AND 2010:2026[pdat]
+```
+
+```r
+library(rentrez)
+
+term <- paste0('("Penn State Worry Questionnaire"[tiab] OR PSWQ[tiab]) ',
+               'AND 2010:2026[pdat]')
+
+# Fetch summaries via the web history in POST batches; a long id list in a GET
+# overflows the URL (HTTP 414).
+srch <- entrez_search(db = "pubmed", term = term, retmax = 0, use_history = TRUE)
+recs <- list()
+if (srch$count > 0)
+  for (start in seq(0, srch$count - 1, by = 200)) {
+    recs <- c(recs, entrez_summary(db = "pubmed", web_history = srch$web_history,
+                                   retstart = start, retmax = 200,
+                                   always_return_list = TRUE))
+    Sys.sleep(0.34)   # stay under 3 requests/second without an API key
+  }
+```
+
+#### Semantic Scholar
+
+Free Graph API. The bulk-search endpoint takes a boolean query where `+` is AND,
+`|` is OR, `-` is NOT, `"..."` is a phrase, `*` truncates, and `()` groups.
+Matching is exhaustive rather than relevance-ranked, which suits a systematic
+search. The query below is Search B. The programmatic pull beneath it runs
+Search A, the instrument-only form.
+
+Query (Search B, instrument AND methods):
+
+```
+("Penn State Worry Questionnaire" | PSWQ)
++ (Rasch | "item response theory" | IRT | "graded response model"
+   | "partial credit model" | "rating scale model" | "factor analysis"
+   | "confirmatory factor analysis" | "exploratory factor analysis"
+   | bifactor | "structural equation model*" | "measurement invariance"
+   | "differential item functioning" | psychometric*)
+```
+
+```r
+library(httr2)
+
+# Instrument-only Search A, paginated over the bulk endpoint's continuation token.
+fetch_page <- function(token = NULL)
+  request("https://api.semanticscholar.org/graph/v1/paper/search/bulk") |>
+    req_url_query(query = '"Penn State Worry Questionnaire" | PSWQ',
+                  year = "2010-", fields = "title,year,externalIds",
+                  token = token) |>
+    req_retry(max_tries = 3) |> req_perform() |> resp_body_json()
+
+s2_raw <- list(); tok <- NULL
+repeat {
+  pg <- fetch_page(tok); s2_raw <- c(s2_raw, pg$data)
+  tok <- pg$token; if (is.null(tok)) break
+}
+```
+
+### Search log
+
+Fill one row per database per search. Record the exact query, the date run, and
+the raw hit count before deduplication.
+
+| Database        | Search | Date run   | Query version | Hits | Notes |
+|-----------------|--------|------------|---------------|------|-------|
+| OpenAlex        | A      |            | v1            |      |       |
+| OpenAlex        | B      |            | v1            |      |       |
+| Semantic Scholar| A      |            | v1            |      |       |
+| Europe PMC      | A      |            | v1            |      |       |
+| Europe PMC      | B      |            | v1            |      |       |
+| PubMed          | A      |            | v1            |      |       |
+
+Total before dedup: __ . After dedup: __ . Screened: __ . Included: __ .
+
+### Deduplication and PRISMA counts
+
+Each source returns a different column layout, so records are first harmonized to
+a common schema, then deduplicated on DOI with a normalized-title fallback. The
+per-source and pooled counts feed the PRISMA flow diagram.
+
+```r
+library(dplyr)
+library(stringr)
+
+# Each source above is tidied to columns source, doi, title, year, abstract
+# (the per-source tidy code is in searches.qmd), then combined:
+records <- bind_rows(oa_tidy, epmc_tidy, pm_tidy, s2_tidy) |>
+  mutate(
+    doi_key   = na_if(str_remove(str_to_lower(doi), "^https?://(dx\\.)?doi\\.org/"), ""),
+    # Unicode letter and number classes, so non-Latin titles keep a usable key.
+    # An ASCII-only class reduces them to "", and records sharing "" collapse.
+    title_key = na_if(str_squish(str_replace_all(str_to_lower(title),
+                                                 "[^\\p{L}\\p{N}]+", " ")), ""),
+    match_key = coalesce(doi_key, title_key)   # DOI where present, else title
+  )
+
+identified_by_source <- count(records, source, name = "n_identified")
+
+# Deduplicate, preferring the copy that carries an abstract.
+deduped <- records |>
+  mutate(has_abs = !is.na(abstract) & abstract != "") |>
+  arrange(match_key, desc(has_abs), source) |>
+  distinct(match_key, .keep_all = TRUE) |>
+  select(-has_abs)
+
+n_identified  <- nrow(records)
+n_after_dedup <- nrow(deduped)
+n_duplicates  <- n_identified - n_after_dedup
+
+# Per-source unique contribution, the evidence for the source set.
+key_source <- distinct(records, match_key, source)
+source_contribution <- key_source |>
+  count(source, name = "n_records") |>
+  left_join(
+    key_source |> add_count(match_key, name = "n_src") |>
+      filter(n_src == 1) |> count(source, name = "n_unique"),
+    by = "source"
+  ) |>
+  mutate(n_unique = coalesce(n_unique, 0L))
+```
+
+Exact keys miss near-duplicates with different DOIs and minor title variants. For
+those, `synthesisr::find_duplicates(records$title_key, method = "string_osa")`
+flags fuzzy pairs to review by hand before removal. Keep the reconciliation
+manual so nothing is dropped silently.
+
+```r
+# PRISMA-ScR flow counts. The screening rows are filled during screening.
+prisma <- tibble::tribble(
+  ~stage,                               ~n,
+  "Records identified (all sources)",   n_identified,
+  "Duplicates removed",                 n_duplicates,
+  "Records screened (title/abstract)",  n_after_dedup,
+  "Records excluded at screening",      NA_integer_,
+  "Reports sought for retrieval",       NA_integer_,
+  "Reports not retrieved",              NA_integer_,
+  "Reports assessed for eligibility",   NA_integer_,
+  "Reports excluded (with reasons)",    NA_integer_,
+  "Studies included",                   NA_integer_
+)
+
+identified_by_source
+prisma
+
+# Hand the deduplicated set to screening (Rayyan imports CSV/RIS):
+# readr::write_csv(deduped, "records_deduped.csv")
+# The PRISMA2020 package renders the flow diagram from `prisma` once complete.
+```
+

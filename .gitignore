@@ -1,0 +1,25 @@
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+/.quarto/
+/_manuscript
+/trackchanges.sty
+.Rproj.user
+.Rhistory
+.Rdata
+.httr-oauth
+.DS_Store
+STYLE.md
+**/*.quarto_ipynb
+*copy*.*
+/backups
+apa_processed.docx
+/_freeze/
+review-comments-*.md
+HANDOFF.md
+SCOPUS_WoS.qmd
+# Search pulls: ignore everything under data/, in every run folder, except the
+# deduplicated record set (source, year, title, DOI, no abstracts).
+/data/**
+!/data/**/
+!/data/**/records_deduped.csv
+index.docx

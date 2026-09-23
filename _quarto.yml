@@ -1,0 +1,103 @@
+# quarto render                     -> builds index.qmd, the single prereg doc
+#   preprint-typst  -> PDF (the OSF preregistration document)
+#   apaquarto-docx  -> Word version for a journal or registry
+# The search strategy, database strings, and record-management code live in
+# Appendix A of index.qmd, so there is one self-contained document to register.
+# quarto render index.qmd --to preprint-typst   -> just the prereg PDF
+
+project:
+  title: "pswq_psychometric_scoping_review"
+  render:
+    - index.qmd
+
+# Running head. Two keys because the two templates read different ones:
+# mvuorre/preprint reads `running-head` and prints it verbatim, apaquarto reads
+# `shorttitle` and upper-cases it itself. Without `shorttitle`, apaquarto falls
+# back to the full title, which is far too long for a running head.
+running-head: "PSWQ PSYCHOMETRIC SCOPING REVIEW"
+shorttitle: "PSWQ psychometric scoping review"
+
+# Shared author metadata. Kept here rather than in index.qmd so the body and the
+# search appendix inherit one definition and cannot disagree about the
+# affiliation or contact details.
+author:
+  - name: Magnus Johansson
+    affiliations:
+      - id: 1
+        name: Centre for Psychiatry Research, Department of Clinical Neuroscience, Karolinska Institutet, & Stockholm Health Care Services, Region Stockholm
+    orcid: 0000-0003-1669-592X
+    email: magnus.johansson.3@ki.se
+    corresponding: true
+  # TODO co-authors for this review are not decided yet. Add them here (with
+  # affiliations and ORCIDs) before registering at OSF.
+  - name: Tove Wahlund
+    orcid: 0000-0002-5123-2392
+    affiliations:
+      - id: 2
+        name: Stockholm Health Care Services, Region Stockholm, Stockholm, Sweden
+      - id: 3
+        name: Division of Psychology, Department of Clinical Neuroscience, Karolinska Institutet, Stockholm, Sweden
+  - name: Maria Hedman-Lagerlöf
+    orcid: 0000-0002-3581-099X
+    affiliations:
+      - id: 1
+        name: Centre for Psychiatry Research, Department of Clinical Neuroscience, Karolinska Institutet, & Stockholm Health Care Services, Region Stockholm
+# apa.csl (declared per format below) styles the reference list.
+bibliography: refs.bib
+
+execute:
+  echo: false
+  warning: false
+  message: false
+
+format:
+  preprint-typst:
+    number-sections: true
+    citeproc: true
+    csl: apa.csl
+    fig-format: png
+    fig-dpi: 300
+    # Multiplier on the 0.65em base leading. The template default is 10/13,
+    # i.e. tighter than single spacing.
+    linestretch: 1.15
+    # Paragraph spacing. The template defaults this to a fixed 0.6em, which does
+    # NOT scale with linestretch, so raising linestretch alone leaves the first
+    # line of each paragraph sitting closer to the previous line than ordinary
+    # lines are to each other. Keep this equal to linestretch * 0.65em.
+    spacing: 0.7475em
+    # Link and reference colour. `colorlinks` + `include-in-header` show rules
+    # do NOT work with this extension: the template applies its own
+    # `show link:` / `show ref:` rules inside preprint(), and a later show rule
+    # wins in Typst, so anything set in the header is overwritten. Use the
+    # template's own parameters instead. "rgb(0, 0, 255)"
+    #   linkcolor  URLs, and citations once they are links (default: blue)
+    #   citecolor  cross-references such as @tbl-design (default: none) 
+    linkcolor: "blue"
+    citecolor: "blue"
+    # citeproc renders citations as plain text, so they are not links and cannot
+    # be coloured at all until this makes them internal links to the reference
+    # list. Required for linkcolor to reach citations.
+    link-citations: true
+
+  # Word output for journal submission. Both formats are declared, so a plain
+  # `quarto render` builds both; use --to to pick one:
+  #   quarto render index.qmd --to preprint-typst                  (preprint PDF)
+  #   quarto render index.qmd --to apaquarto-docx --profile blind  (anonymous docx)
+  apaquarto-docx:
+    number-sections: false
+    # Quarto's docx default is 96 dpi. apaquarto scales every figure to the
+    # 6.5in APA text width, so a plot authored at 7.5in lands at ~110 dpi
+    # without this.
+    fig-dpi: 300
+    # Styles the *Note.* paragraphs as apaquarto FigureNote. See notes.lua for
+    # why this is a filter rather than a custom-style div in the source.
+    filters:
+      - notes.lua
+    floatsintext: true
+
+  # Uncomment for an HTML version.
+  # html:
+  #   html-math-method: katex
+  #   toc: true
+  #   number-sections: true
+  #   csl: apa.csl
