@@ -8,13 +8,13 @@ invariance, and ordered response-category thresholds), and examines whether
 fit-interpretation criteria, estimator choice, and the handling of local
 dependence track the structural conclusions reached.
 
-- Preregistration: OSF, DOI to be added
-- Archived release: DOI to be added
+- Preregistration: OSF, <https://doi.org/10.17605/OSF.IO/BZVGW>
+- Archived release: DOI to be added when Zenodo recovers from "heavy automated traffic from bots and AI crawlers".
 
 ## Authors
 
 - Magnus Johansson, Karolinska Institutet ([ORCID](https://orcid.org/0000-0003-1669-592X))
-- Tove Wahlund, Region Stockholm and Karolinska Institutet ([ORCID](https://orcid.org/0000-0002-5123-2392))
+- Tove Wahlund, Karolinska Institutet and Region Stockholm ([ORCID](https://orcid.org/0000-0002-5123-2392))
 - Maria Hedman-Lagerlöf, Karolinska Institutet and Region Stockholm ([ORCID](https://orcid.org/0000-0002-3581-099X))
 
 ## Contents

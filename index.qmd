@@ -307,7 +307,7 @@ little or no psychometric evidence.
 
 ## Registration and timeline
 
-This protocol is registered at OSF before screening begins. When the DOI is minted, we will record the OSF registration DOI in an updated protocol. The database searches are planned to be conducted on the 29th of September 2026.
+This protocol was registered at OSF before screening begins <https://doi.org/10.17605/OSF.IO/BZVGW>. The database searches are planned to be conducted on the 29th of September 2026.
 The protocol source, the search notebook, and the record files the notebook
 produces are kept in a public GitHub repository, <https://github.com/pgmj/pswq_review>, so that the search can be rerun and the reported counts checked. A GitHub
 release is archived with a persistent DOI at registration and again when the
