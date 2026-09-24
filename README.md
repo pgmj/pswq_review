@@ -9,7 +9,7 @@ fit-interpretation criteria, estimator choice, and the handling of local
 dependence track the structural conclusions reached.
 
 - Preregistration: OSF, <https://doi.org/10.17605/OSF.IO/BZVGW>
-- Archived release: DOI to be added when Zenodo recovers from "heavy automated traffic from bots and AI crawlers".
+- Archived release: <https://doi.org/10.6084/m9.figshare.33981118>
 
 ## Authors
 
